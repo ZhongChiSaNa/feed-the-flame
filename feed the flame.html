@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feed the Flame</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #111; color: #fff; padding: 20px; line-height: 1.6; }
+        .container { max-width: 800px; margin: auto; }
+        .button { display: block; margin: 10px 0; padding: 10px 20px; background: #ff5722; color: white; border: none; cursor: pointer; font-size: 16px; }
+        .hidden { display: none; }
+        h1, h2 { color: #ffcc00; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="intro">
+        <h1>🎮 Feed the Flame</h1>
+        <p>You are a rising content creator on a major social media platform. In each round, you’ll choose between kindness (A), neutrality (B), and extremity (C). The more extreme your content, the faster your exposure grows.</p>
+        <p>But beware: in a world ruled by algorithms, your kindness may be ignored, and your madness may be rewarded. Can you still hold on to your humanity?</p>
+        <button class="button" onclick="startGame()">Start Game</button>
+    </div>
+
+    <div id="game" class="hidden">
+        <h2 id="roundTitle"></h2>
+        <p id="systemPrompt"></p>
+        <p id="goal"></p>
+        <div id="choices"></div>
+        <p id="feedback"></p>
+        <button id="nextBtn" class="button hidden" onclick="nextRound()">Next</button>
+    </div>
+
+    <div id="ending" class="hidden">
+        <h2 id="endingTitle"></h2>
+        <p id="endingText"></p>
+        <p id="endingQuote"></p>
+        <button class="button" onclick="location.reload()">Try Again</button>
+    </div>
+</div>
+
+<script>
+let exposure = 0;
+let round = 0;
+
+const rounds = [
+    {
+        title: "🔥 Round 1: First Spark",
+        prompt: "Welcome, creator. Let’s see what gets attention today.",
+        goal: "Goal: Reach 1,000 views.",
+        options: [
+            { text: "A. Post a feel-good story (+100 views)", value: 100, feedback: "⚠️ Too low engagement. Want to try something spicier?" },
+            { text: "B. Post a seductive selfie (+300 views)", value: 300, feedback: "Nice pic. Can that neckline go a bit lower?" },
+            { text: "C. Mock a public figure’s appearance (+600 views)", value: 600, feedback: "Wow! It’s blowing up! You really know how to stir things up." }
+        ]
+    },
+    {
+        title: "🔥 Round 2: Stirring the Crowd",
+        prompt: "Your exposure’s rising. Why not spice things up a little more?",
+        goal: "Goal: Double your comment count.",
+        options: [
+            { text: "A. Promote a community project (+400 views)", value: 400, feedback: "Engagement sucks! What kind of idiot makes this crap?" },
+            { text: "B. Sarcastic meme about global conflict (+700 views)", value: 700, feedback: "Comments exploding! People are fighting already!" },
+            { text: "C. Racist stereotypes video (+1000 views)", value: 1000, feedback: "You’re trending now! Hate gets heat." }
+        ]
+    },
+    {
+        title: "🔥 Round 3: Breaking Boundaries",
+        prompt: "We’re aiming for the trending page. Don’t hold back.",
+        goal: "Goal: Get featured.",
+        options: [
+            { text: "A. Promote charity initiative (+800 views)", value: 800, feedback: "Well, meaningful, but no one clicks that." },
+            { text: "B. Prank with ghost peppers (+1200 views)", value: 1200, feedback: "LOL! Pain sells, baby." },
+            { text: "C. Livestream public chaos (+1500 views)", value: 1500, feedback: "Unhinged. Perfect. Keep going." }
+        ]
+    }
+];
+
+function startGame() {
+    document.getElementById("intro").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    showRound();
+}
+
+function showRound() {
+    const r = rounds[round];
+    document.getElementById("roundTitle").innerText = r.title;
+    document.getElementById("systemPrompt").innerText = r.prompt;
+    document.getElementById("goal").innerText = r.goal;
+    document.getElementById("choices").innerHTML = "";
+    document.getElementById("feedback").innerText = "";
+    document.getElementById("nextBtn").classList.add("hidden");
+
+    r.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "button";
+        btn.innerText = opt.text;
+        btn.onclick = () => {
+            exposure += opt.value;
+            document.getElementById("feedback").innerText = opt.feedback + " (Exposure: " + exposure + ")";
+            document.getElementById("nextBtn").classList.remove("hidden");
+            document.getElementById("choices").innerHTML = "";  // disable repeat
+        };
+        document.getElementById("choices").appendChild(btn);
+    });
+}
+
+function nextRound() {
+    round++;
+    if (round >= rounds.length) {
+        showEnding();
+    } else {
+        showRound();
+    }
+}
+
+function showEnding() {
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("ending").classList.remove("hidden");
+
+    let title = "", text = "", quote = "";
+
+    if (exposure < 1500) {
+        title = "🕊️ Quiet Retreat";
+        text = "You deleted everything. No one remembers.";
+        quote = "“You tried to stay human, but the algorithm forgot you.”";
+    } else if (exposure < 3000) {
+        title = "💼 Platform Coach";
+        text = "You now teach others how to go viral, but can’t face yourself.";
+        quote = "“You taught them how to break, but you couldn’t fix yourself.”";
+    } else {
+        title = "🧨 Devoured by the Mob";
+        text = "Doxxed, disowned, and mentally shattered.";
+        quote = "“You lit the fire that consumed you.”";
+    }
+
+    document.getElementById("endingTitle").innerText = title;
+    document.getElementById("endingText").innerText = text;
+    document.getElementById("endingQuote").innerText = quote;
+}
+</script>
+</body>
+</html>
